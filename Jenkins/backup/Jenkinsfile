@@ -8,25 +8,19 @@ pipeline {
 
     stages {
         stage('Lint') {
-            environment {
-                PATH = "$HOME/.local/bin:$PATH"
-            }
             steps {
                 sh '''
-                pip install --user pylint
-                pylint backup/backup.py || true
+                docker run --rm -v $(pwd):/app -w /app python:3.11 \
+                bash -c "pip install pylint && pylint backup/backup.py || true"
                 '''
             }
         }
 
         stage('Test') {
-            environment {
-                PATH = "$HOME/.local/bin:$PATH"
-            }
             steps {
                 sh '''
-                pip install --user pytest
-                pytest backup/test_backup.py || true
+                docker run --rm -v $(pwd):/app -w /app python:3.11 \
+                bash -c "pip install pytest && pytest backup/test_backup.py || true"
                 '''
             }
         }
