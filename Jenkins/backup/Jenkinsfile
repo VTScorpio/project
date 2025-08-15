@@ -23,7 +23,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:latest -f backup/Dockerfile .'
+                sh 'docker build -t $IMAGE_NAME -f backup/Dockerfile .'
             }
         }
 
