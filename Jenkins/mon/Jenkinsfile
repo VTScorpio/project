@@ -9,8 +9,11 @@ pipeline {
     stages {
         stage('Docker Build') {
             steps {
-                dir('../../mon'){
-                    sh 'docker build -t $IMAGE_NAME .'
+                 dir('../../mon') {
+                    sh '''
+                    echo "[INFO] Construim imagine Docker..."
+                    docker build -t $IMAGE_NAME .
+                    '''
                 }
                     
             }
