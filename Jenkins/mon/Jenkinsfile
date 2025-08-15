@@ -9,7 +9,10 @@ pipeline {
     stages {
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $IMAGE_NAME -f mon/Dockerfile .'
+                dir('../../mon'){
+                    sh 'docker build -t $IMAGE_NAME .'
+                }
+                    
             }
         }
 
