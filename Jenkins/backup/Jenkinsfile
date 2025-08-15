@@ -9,14 +9,14 @@ pipeline {
     stages {
         stage('Lint') {
             steps {
-                sh 'pip install pylint'
+                sh 'pipx install pylint'
                 sh 'pylint /backup/backup.py'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'pip install pytest'
+                sh 'pipx install pytest'
                 sh 'pytest /backup/test_backup.py'
             }
         }
