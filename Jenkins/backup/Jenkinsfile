@@ -22,9 +22,16 @@ pipeline {
         }
 
         stage('Docker Build') {
-            steps {
-                sh 'docker build -t $IMAGE_NAME -f /backup/Dockerfile .'
+             steps {
+                 dir('backup') {
+                    sh '''
+                    echo "[INFO] Construim imagine Docker..."
+                    docker build -t $IMAGE_NAME .
+                    '''
+                }
+                    
             }
+            
         }
 
 
