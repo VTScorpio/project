@@ -1,0 +1,101 @@
+- name: Instalare Docker pe Ubuntu (dacă nu e deja instalat)
+  hosts: valid_host
+  become: true
+  vars:
+    docker_releases_new: ["jammy", "lunar", "mantic", "noble"]
+
+  tasks:
+    - name: Verifică dacă Docker este deja instalat
+      command: which docker
+      register: docker_check
+      ignore_errors: true
+
+    - name: Afișează status Docker
+      debug:
+        msg: >
+          Docker este deja instalat. Se sare peste instalare.
+      when: docker_check.rc == 0
+
+    - name: Curăță sursele Docker (doar dacă nu e instalat)
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/docker.list
+        - /etc/apt/keyrings/docker.gpg
+        - /etc/apt/keyrings/docker.asc
+      when: docker_check.rc != 0
+      ignore_errors: yes
+
+    - name: Instalează pachete de bază
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+      when: docker_check.rc != 0
+
+    - name: Creează folder keyrings (Ubuntu >= 22.04)
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+      when:
+        - docker_check.rc != 0
+        - ansible_distribution_release in docker_releases_new
+
+    - name: Descarcă cheia GPG (Ubuntu >= 22.04)
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.gpg
+        mode: '0644'
+      when:
+        - docker_check.rc != 0
+        - ansible_distribution_release in docker_releases_new
+
+    - name: Adaugă repo (Ubuntu >= 22.04)
+      copy:
+        dest: /etc/apt/sources.list.d/docker.list
+        content: |
+          deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        mode: '0644'
+      when:
+        - docker_check.rc != 0
+        - ansible_distribution_release in docker_releases_new
+
+    - name: Adaugă cheia GPG (Ubuntu < 22.04)
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      when:
+        - docker_check.rc != 0
+        - ansible_distribution_release in ["focal", "bionic"]
+
+    - name: Adaugă repo (Ubuntu < 22.04)
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+      when:
+        - docker_check.rc != 0
+        - ansible_distribution_release in ["focal", "bionic"]
+
+    - name: Instalează Docker
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+        update_cache: yes
+      when: docker_check.rc != 0
+
+    - name: Activează și pornește Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+      when: docker_check.rc != 0

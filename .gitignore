@@ -1,0 +1,15 @@
+# Logs
+*.log
+system-state.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Terraform
+.terraform/
+terraform.tfstate*
+*.tfplan
+
+# Docker
+*.tar
