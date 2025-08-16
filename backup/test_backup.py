@@ -3,8 +3,10 @@ import shutil
 import backup
 
 def test_backup_creation(tmp_path):
-    backup_dir = tmp_path / "backup-data"
+    backup_dir = tmp_path / "/backup-data"
+    print(backup_dir)
     log_file = tmp_path / "system-state.log"
+    print(log_file)
     
     os.environ["BACKUP_DIR"] = str(backup_dir)
     os.environ["LOG_FILE"] = str(log_file)
