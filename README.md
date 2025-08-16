@@ -50,3 +50,17 @@ Nume: PlatformaMonitorizare
 Tip: List View
 
 Selectează joburile relevante
+
+
+1. Documentație
+
+Include exemple clare pentru rulare locală:
+
+bash setup.sh
+docker compose up -d
+
+
+și cum se aplică Ansible:
+
+ansible-playbook -i ansible/inventory.ini ansible/install-docker.yml
+ansible-playbook -i ansible/inventory.ini ansible/run-platform.yml

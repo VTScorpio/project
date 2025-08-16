@@ -16,16 +16,7 @@ pipeline {
             }
         }
 
-        // stage('Test') {
-        //     steps {
-        //         sh '''
-        //         docker run --rm -v $(pwd):/app -w /app python:3.11 bash -c "
-        //         pip install pytest &&
-        //         pytest -s backup/test_backup.py || true"
-        //         '''
-        //     }
-        // }
-
+ 
         stage('Test') {
             steps {
                 sh '''
@@ -59,36 +50,36 @@ pipeline {
             }
         }
 
-    //     stage('Deploy to Minikube') {
-    //     steps {
-    //         script {
-    //             def backupExists = sh(script: "docker images | grep backup | wc -l", returnStdout: true).trim()
-    //             def monitorExists = sh(script: "docker images | grep monitor | wc -l", returnStdout: true).trim()
+        stage('Deploy to Minikube') {
+        steps {
+            script {
+                def backupExists = sh(script: "docker images | grep backup | wc -l", returnStdout: true).trim()
+                def monitorExists = sh(script: "docker images | grep monitor | wc -l", returnStdout: true).trim()
 
-    //             if (backupExists != "0" && monitorExists != "0") {
-    //                 sh '''
-    //                 echo "[INFO] Setăm contextul Minikube..."
-    //                 kubectl config use-context minikube
+                if (backupExists != "0" && monitorExists != "0") {
+                    sh '''
+                    echo "[INFO] Setăm contextul Minikube..."
+                    kubectl config use-context minikube
 
-    //                 echo "[INFO] Aplicăm fișierele YAML pentru backup și monitor..."
-    //                 kubectl apply -f k8s/monitor-deployment.yaml
-    //                 kubectl apply -f k8s/backup-deployment.yaml
-    //                 kubectl apply -f k8s/monitor-service.yaml
-    //                 kubectl apply -f k8s/backup-service.yaml
+                    echo "[INFO] Aplicăm fișierele YAML pentru backup și monitor..."
+                    kubectl apply -f k8s/monitor-deployment.yaml
+                    kubectl apply -f k8s/backup-deployment.yaml
+                    kubectl apply -f k8s/monitor-service.yaml
+                    kubectl apply -f k8s/backup-service.yaml
 
-    //                 echo "[INFO] Așteptăm finalizarea rollout-ului..."
-    //                 kubectl rollout status deployment/monitor-deployment
-    //                 kubectl rollout status deployment/backup-deployment
+                    echo "[INFO] Așteptăm finalizarea rollout-ului..."
+                    kubectl rollout status deployment/monitor-deployment
+                    kubectl rollout status deployment/backup-deployment
 
-    //                 echo "[INFO] Verificare poduri active..."
-    //                 kubectl get pods -o wide
-    //                 '''
-    //             } else {
-    //                 error("[ERROR] Imaginile Docker pentru backup sau monitor lipsesc. Oprește pipeline-ul.")
-    //             }
-    //         }
-    //     }
-    // }
+                    echo "[INFO] Verificare poduri active..."
+                    kubectl get pods -o wide
+                    '''
+                } else {
+                    error("[ERROR] Imaginile Docker pentru backup sau monitor lipsesc. Oprește pipeline-ul.")
+                }
+            }
+        }
+    }
 
 
     }
