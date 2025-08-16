@@ -2,7 +2,6 @@ import os
 import shutil
 import backup
 
-dimport backup
 
 def test_backup_creation(tmp_path):
     backup_dir = tmp_path / "backup"
