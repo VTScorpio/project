@@ -5,7 +5,7 @@ from datetime import datetime
 import logging
 import hashlib
 
-LOG_FILE = "/backup/system-state.log"
+LOG_FILE = os.getenv("LOG_FILE", "/backup/system-state.log")
 BACKUP_DIR = os.getenv("BACKUP_DIR", "/backup-data")
 INTERVAL = int(os.getenv("BACKUP_INTERVAL", 5))
 
