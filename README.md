@@ -1,66 +1,200 @@
-# Platformă de Monitorizare DevOps
+# 📦 Platforma de Backup si Monitorizare - Proiect DevOps
 
-Acest proiect monitorizează utilizarea CPU, RAM, disk și procese și salvează loguri și backup-uri în containere Docker.
+## 🔍 Descriere generală
 
-## Tehnologii
-- Bash, Python
-- Docker, Docker Compose
-- Jenkins (CI/CD)
-- Ansible (config management)
-- AWS + Terraform (infrastructură)
+Acest proiect DevOps este o platformă modulară ce asigură:
 
-## Rulare locală
+* **Backup automat** al stării sistemului (load, memorie, disk etc.).
+* **Monitorizare periodică** cu loguri salvate persistent.
+* **CI/CD complet** folosind **Jenkins**.
+* **Containere Docker** pentru izolare.
+* **Deploy local in Minikube** (opțional).
+* **Provisionare infrastructură AWS local cu LocalStack** prin **Terraform**.
+
+## 📁 Structura proiectului
+
+```
+project/
+
+├── ansible
+│   ├── install-docker.yml
+│   ├── inventory.ini
+│   └── run-platform.yml
+├── backup
+│   ├── backup.py
+│   ├── Dockerfile
+│   └── test_backup.py
+├── backup-data  [error opening dir]
+├── data  [error opening dir]
+├── docker-compose.yml
+├── Jenkins
+│   ├── backup
+│   │   └── Jenkinsfile
+│   └── mon
+│       └── Jenkinsfile
+├── k8s
+│   ├── backup-deployment.yaml
+│   ├── backup-service.yaml
+│   ├── k8s.sh
+│   ├── monitor-deployment.yaml
+│   └── monitor-service.yaml
+├── mon
+│   ├── Dockerfile
+│   └── mon.sh
+├── README.md
+├── README.md.old
+├── setup.sh
+└── terraform
+    ├── backend.tf
+    ├── main.tf
+    ├── main.tf.old
+    ├── outputs.tf
+    ├── terraform.tfvars
+    ├── user_data.sh
+    └── variables.tf
+
+```
+
+
+## ⚙️ Instalare și rulare locală
+
+### 🔧 Cerințe minime:
+
+* Python 3.8+
+* Docker
+* Jenkins
+* Minikube (opțional)
+* Terraform
+* LocalStack (versiune full)
+
+### 1. 🔁 Clonează proiectul
+
 ```bash
-bash setup.sh
+git clone https://github.com/VTScorpio/project.git
+cd project
+```
 
+### 2. 🔧 Rulare script Python de backup
 
+```bash
+cd backup
+python3 backup.py
+cat data/system-state.log
+```
 
+### 3. 🐍 Testare unitară cu Pytest
 
-1. Creează credentiale DockerHub
+```bash
+pytest test_backup.py -s
+```
 
-Manage Jenkins → Credentials → (global) → Add Credentials
+### 4. 🔧 Rulare script monitor Bash
 
-Type: Username + Password
+```bash
+cd monitor
+bash monitor.sh
+cat logs/monitor.log
+```
 
-ID: dockerhub
+---
 
+## 🐳 Containere Docker
 
+### 1. 📦 Build imagine Backup
 
-2. Creează user nou pentru proiect
+```bash
+cd backup
+docker build -t backup-image .
+```
 
-Manage Jenkins → Manage Users → Create User
+### 2. 📦 Build imagine Monitor
 
-Dă-i permisiuni doar la:
+```bash
+cd monitor
+docker build -t monitor-image .
+```
 
-Job/Read
+---
 
-Build/Run
+## 🔁 CI/CD cu Jenkins
 
-Workspace
+### 📌 Pipeline Python (`Jenkinsfile-backup`):
 
+* Lint: `python -m py_compile`
+* Teste unitare: `pytest`
+* Docker build
+* Push în DockerHub
 
-3. Creează View personalizat
+### 📌 Pipeline Bash (`Jenkinsfile-monitor`):
 
-În Dashboard:
+* Docker build
+* Push în DockerHub
 
-+ New View
+### 🔐 Utilizator și View dedicat:
 
-Nume: PlatformaMonitorizare
+* User: `ci-cd-user`
+* View: `DevOps Project View`
 
-Tip: List View
+---
 
-Selectează joburile relevante
+## ☸️ Deploy în Minikube (opțional)
 
+```bash
+kubectl config use-context minikube
+kubectl apply -f k8s/
+kubectl get pods
+```
 
-1. Documentație
+---
 
-Include exemple clare pentru rulare locală:
+## ☁️ Provisionare AWS Local cu Terraform
 
-bash setup.sh
-docker compose up -d
+### 1. Pornește LocalStack
 
+```bash
+localstack start
+```
 
-și cum se aplică Ansible:
+### 2. Inițializează și aplică Terraform
 
-ansible-playbook -i ansible/inventory.ini ansible/install-docker.yml
-ansible-playbook -i ansible/inventory.ini ansible/run-platform.yml
+```bash
+cd terraform
+terraform init
+terraform apply -auto-approve
+```
+
+### 3. Verificare S3 + EC2 (simulat)
+
+```bash
+awslocal s3 ls
+awslocal ec2 describe-instances --output table
+```
+
+---
+
+## ✅ Verificări finale
+
+* Backup salvat în `backup/data/`
+* Loguri monitor în `monitor/logs/`
+* Pipeline-uri Jenkins executate cu succes
+* Imaginile urcate în DockerHub
+* Deploy activ în Minikube (dacă este pornit)
+* Terraform state salvat în S3 LocalStack
+
+---
+
+## ℹ️ Informații adiționale
+
+* Fișierele `Dockerfile` sunt configurate să monteze volume pentru păstrarea logurilor.
+* `terraform.tfstate` este salvat într-un bucket S3 simulat local.
+* Instanțele EC2 din LocalStack sunt doar simulate — nu pot fi SSH-uite.
+
+---
+
+## ✍️ Autori
+
+* Victor Tulbure
+
+## 📝 Licență
+
+MIT License
