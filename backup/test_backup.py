@@ -3,18 +3,17 @@ import shutil
 import backup
 
 def test_backup_creation(tmp_path):
-    # Setup
-    os.environ["BACKUP_DIR"] = str(tmp_path / "backup")
-    os.makedirs(os.environ["BACKUP_DIR"], exist_ok=True)
+    backup_dir = tmp_path / "backup"
+    log_file = tmp_path / "system-state.log"
+    
+    os.environ["BACKUP_DIR"] = str(backup_dir)
+    os.environ["LOG_FILE"] = str(log_file)
 
-    test_file = tmp_path / "system-state.log"
-    test_file.write_text("CPU Usage: 20%")
-    shutil.copy(test_file, "system-state.log")
+    os.makedirs(backup_dir, exist_ok=True)
+    log_file.write_text("CPU Usage: 20%")
 
-    # Run backup once
-    backup.LOG_FILE = "system-state.log"
+    # Rulează backupul
     backup.perform_backup()
 
-    # Verificare
-    backups = os.listdir(os.environ["BACKUP_DIR"])
+    backups = os.listdir(backup_dir)
     assert any(b.endswith(".log") for b in backups)
