@@ -16,15 +16,26 @@ pipeline {
             }
         }
 
+        // stage('Test') {
+        //     steps {
+        //         sh '''
+        //         docker run --rm -v $(pwd):/app -w /app python:3.11 bash -c "
+        //         pip install pytest &&
+        //         pytest -s backup/test_backup.py || true"
+        //         '''
+        //     }
+        // }
+
         stage('Test') {
             steps {
                 sh '''
-                docker run --rm -v $(pwd):/app -w /app python:3.11 bash -c "
-                pip install pytest &&
-                pytest -s backup/test_backup.py || true"
+                docker run --rm -v $(pwd):/app -w /app python:3.11 \
+                bash -c "pip install pytest && pytest backup/test_backup.py || true"
                 '''
             }
         }
+
+
 
 
         stage('Docker Build') {
