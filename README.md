@@ -1,4 +1,4 @@
-# Platforma de Backup si Monitorizare - Proiect DevOps
+## Platforma de Backup si Monitorizare - Proiect DevOps
 
 ## Descriere generala
 
@@ -186,7 +186,7 @@ sudo nano /var/lib/jenkins/.kube/config  # Inlocuieste toate aparitiile lui: * $
 ./tf.sh stop
 ```
 
-#### ℹInformații adiționale
+#### Informații adiționale
 
 * `terraform.tfstate` este salvat într-un bucket S3 simulat local.
 * Instanțele EC2 din LocalStack sunt doar simulate — nu pot fi SSH-uite.
