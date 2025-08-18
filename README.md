@@ -6,7 +6,7 @@ Acest proiect DevOps este o platforma modulara ce asigura:
 
 * **Backup automat** al starii sistemului (load, memorie, disk etc.).
 * **Monitorizare periodica** cu loguri salvate persistent.
-* **Ansible** 
+* **Ansible** automatizare.
 * **CI/CD complet** folosind **Jenkins**.
 * **Containere Docker** pentru izolare.
 * **Deploy local in Minikube** (opțional).

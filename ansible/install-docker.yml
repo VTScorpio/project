@@ -16,7 +16,7 @@
           Docker este deja instalat. 
       when: docker_check.rc == 0
 
-    - name: Curața sursele Docker (doar daca nu e instalat)
+    - name: Curata sursele Docker (doar daca nu e instalat)
       file:
         path: "{{ item }}"
         state: absent
@@ -118,5 +118,3 @@
       when: compose_check.rc != 0
       retries: 3
       delay: 5
-
-

@@ -13,7 +13,7 @@ BUCKET_NAME="project-terraform-state-local"
 if [ "$1" = "start" ]; then
     if ! docker ps -q --filter "name=localstack" | grep -q .; then
         echo " LocalStack nu ruleaza. Pornire container..."
-        localstack start -d
+        sudo localstack start -d
         sleep 5  # Asteapta ca LocalStack sa porneasca
     else
         echo " LocalStack ruleaza deja."

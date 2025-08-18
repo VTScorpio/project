@@ -12,9 +12,8 @@ def test_backup_creation(tmp_path):
     os.makedirs(backup_dir, exist_ok=True)
     log_file.write_text("CPU Usage: 20%")
 
-    importlib.reload(backup)  # reîncarca LOG_FILE dupa setarea ENV
+    importlib.reload(backup)  # reincarca LOG_FILE dupa setarea ENV
     backup.perform_backup(None)
 
     backups = os.listdir(backup_dir)
-    assert any(b.endswith(".log") for b in backups), "Nu s-a creat niciun fișier de backup!"
-
+    assert any(b.endswith(".log") for b in backups), "Nu s-a creat niciun fisier de backup!"
