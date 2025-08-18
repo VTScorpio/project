@@ -56,9 +56,9 @@ project/
 └── tf.sh
 ```
 
-## ⚙️ Instalare si rulare locala
+## Instalare si rulare locala
 
-### 🔧 Cerințe minime:
+### Cerințe minime:
 
 * SSH
 * Python 3.8+
@@ -72,14 +72,14 @@ project/
 * AWS
 * Masina virtuala access SSH
 
-### 1. 🔁 Cloneaza proiectul
+### 1. Cloneaza proiectul
 
 ```bash
 git clone https://github.com/VTScorpio/project.git
 cd project
 ```
 
-### 2. 🐳 Containere Docker
+### 2. Containere Docker
 
 * Rulare script monitor si backup Bash
 
@@ -102,29 +102,29 @@ sudo ./docker.sh stop  # oprire containere mon si backup
 * Se verifica pe masina remote daca a pornit containerele docker
 
 
-### 4. 🔁 CI/CD cu Jenkins
+### 4. CI/CD cu Jenkins
 
 * Pentru functionare corecta este important:
 * Sa fie create credentialele pentru conexiunea hub.docker.com  cu ID dockerhub.
 
-#### 🔐 Creati Utilizator si View dedicat:
+#### Creati Utilizator si View dedicat:
 
 * User: `ex-project`
 * View: pattern `^project-.*`
 
-#### 🔐 Creati 2 pipeline :
+#### Creati 2 pipeline :
 * Creati 2 Pipeline project-mon si 	project-backup, selectare script from SCM ->  GIT. 
 * Indicati -> Repository URL -> https://github.com/VTScorpio/project. 
 * Indicati -> Branch Specifier (blank for 'any') -> */main.
 * Indicati -> Script Path Jenkins/mon/Jenkinsfile pentru monitor si Jenkins/backup/Jenkinsfile pentru backup
 
-#### 📌 Pipeline Bash (`/Jenkins/mon/Jenkinsfile`):
+#### Pipeline Bash (`/Jenkins/mon/Jenkinsfile`):
 
 * Docker build
 * Push în DockerHub
 * Start kubectl monitor
  
-#### 📌 Pipeline Python (`/Jenkins/backup/Jenkinsfile`):
+#### Pipeline Python (`/Jenkins/backup/Jenkinsfile`):
 
 * Docker build
 * Push în DockerHub
@@ -168,7 +168,7 @@ sudo nano /var/lib/jenkins/.kube/config  # Inlocuieste toate aparitiile lui: * $
 ```
 * Rulati pipeline
 
-####  ☸️ Deploy în Minikube  (opțional) 
+####  Deploy în Minikube  (opțional) 
 
 * Pentru verificare fara pipeline Jenkins:
 
@@ -177,7 +177,7 @@ sudo nano /var/lib/jenkins/.kube/config  # Inlocuieste toate aparitiile lui: * $
 ./k8s.sh stop  # oprire proces
 ```
 
-### 5. ☁️ Provisionare AWS, Localstack cu Terraform
+### 5. Provisionare AWS, Localstack cu Terraform
 
 * Pentru verificare script Terraform utilizati:
 
@@ -186,15 +186,15 @@ sudo nano /var/lib/jenkins/.kube/config  # Inlocuieste toate aparitiile lui: * $
 ./tf.sh stop
 ```
 
-#### ℹ️ Informații adiționale
+#### ℹInformații adiționale
 
 * `terraform.tfstate` este salvat într-un bucket S3 simulat local.
 * Instanțele EC2 din LocalStack sunt doar simulate — nu pot fi SSH-uite.
 
-## ✍️ Autori
+## Autori
 
 * Victor Tulbure
 
-## 📝 Licența
+## Licența
 
 * MIT License
