@@ -1,6 +1,6 @@
-# 📦 Platforma de Backup si Monitorizare - Proiect DevOps
+# Platforma de Backup si Monitorizare - Proiect DevOps
 
-## 🔍 Descriere generala
+## Descriere generala
 
 Acest proiect DevOps este o platforma modulara ce asigura:
 
@@ -12,7 +12,7 @@ Acest proiect DevOps este o platforma modulara ce asigura:
 * **Deploy local in Minikube** (opțional).
 * **Provisionare infrastructura AWS local cu LocalStack** prin **Terraform**.
 
-## 📁 Structura proiectului
+## Structura proiectului
 
 ```
 project/
