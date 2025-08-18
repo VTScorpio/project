@@ -1,0 +1,8 @@
+- name: Oprire platforma monitorizare
+  hosts: valid_host
+  become: true
+  tasks:
+    - name: Opreste docker-compose
+      shell: docker-compose down
+      args:
+        chdir: /opt/project/

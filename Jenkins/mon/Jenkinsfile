@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CRED = credentials('dockerhub') // Username + Password
+        IMAGE_NAME = "vtscorpio/monitor:latest"
+    }
+
+    stages {
+        stage('Docker Build') {
+            steps {
+                 dir('mon') {
+                    sh '''
+                    echo "[INFO] Construim imagine Docker..."
+                    docker build -t $IMAGE_NAME .
+                    '''
+                }
+                    
+            }
+        }
+
+        stage('Login & Push') {
+            steps {
+                sh "echo $DOCKERHUB_CRED_PSW | docker login -u $DOCKERHUB_CRED_USR --password-stdin"
+                sh 'docker push $IMAGE_NAME'
+            }
+        }
+
+        stage('Deploy monitor-image to Kubernetes') {
+            steps {
+                sh 'export KUBECONFIG=/var/lib/jenkins/.kube/config'
+                sh 'kubectl apply -f k8s/monitor-deployment.yaml'
+                sh 'kubectl apply -f k8s/monitor-service.yaml'
+                sh 'kubectl get all'
+            }
+    
+        }
+    } 
+}

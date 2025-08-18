@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitor
+  template:
+    metadata:
+      labels:
+        app: monitor
+    spec:
+      containers:
+        - name: monitor
+          image: docker.io/vtscorpio/monitor:latest
+          env:
+            - name: MONITOR_INTERVAL
+              value: "5"
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /backup
+      volumes:
+        - name: shared-logs
+          hostPath:
+            path: /data/shared-logs
+            type: DirectoryOrCreate

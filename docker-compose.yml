@@ -1,0 +1,20 @@
+services:
+  monitor:
+    build:
+      context: ./mon
+    container_name: project-monitor
+    volumes:
+      - ./data:/backup
+    environment:
+      - MONITOR_INTERVAL=5
+
+  backup:
+    build:
+      context: ./backup
+    container_name: project-backup
+    volumes:
+      - ./data:/backup  # <== aici se afla system-state.log
+      - ./backup-data:/backup-data  # <== aici vrei sa salvezi fisierele de backup
+    environment:
+      - BACKUP_INTERVAL=5
+      - BACKUP_DIR=/backup-data 

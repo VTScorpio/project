@@ -1,0 +1,28 @@
+- name: Rulare platforma monitorizare
+  hosts: valid_host
+  become: true
+  tasks:
+    - name: Instaleaza docker-compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.24.2/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Creeaza director proiect
+      file:
+        path: /opt/project
+        state: directory
+        mode: '0755'
+
+    - name: Copiaza codul sursa
+      copy:
+        src: "{{ playbook_dir }}/../"
+        dest: /opt/project/
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Ruleaza docker-compose
+      shell: docker-compose up -d
+      args:
+        chdir: /opt/project/

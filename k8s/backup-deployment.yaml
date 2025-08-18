@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backup
+  template:
+    metadata:
+      labels:
+        app: backup
+    spec:
+      containers:
+        - name: backup
+          image: docker.io/vtscorpio/backup:latest
+          env:
+            - name: LOG_FILE
+              value: /backup/system-state.log
+            - name: BACKUP_INTERVAL
+              value: "5"
+            - name: BACKUP_DIR
+              value: /backup
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /backup
+      volumes:
+        - name: shared-logs
+          hostPath:
+            path: /data/shared-logs
+            type: DirectoryOrCreate

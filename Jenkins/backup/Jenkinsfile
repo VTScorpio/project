@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CRED = credentials('dockerhub') // Username + Password
+        IMAGE_NAME = "vtscorpio/backup:latest"
+    }
+
+    stages {
+        stage('Lint') {
+            steps {
+                sh '''
+                docker run --rm -v $(pwd):/app -w /app python:3.11 \
+                bash -c "pip install pylint && pylint backup/backup.py || true"
+                '''
+            }
+        }
+
+ 
+        stage('Test') {
+            steps {
+                sh '''
+                docker run --rm -v $(pwd):/app -w /app python:3.11 \
+                bash -c "pip install pytest && pytest backup/test_backup.py || true"
+                '''
+            }
+        }
+        stage('Docker Build') {
+             steps {
+                 dir('backup') {
+                    sh '''
+                    echo "[INFO] Construim imagine Docker..."
+                    docker build -t $IMAGE_NAME .
+                    '''
+                }
+                    
+            }
+            
+        }
+
+        stage('Login & Push') {
+            steps {
+                sh "echo $DOCKERHUB_CRED_PSW | docker login -u $DOCKERHUB_CRED_USR --password-stdin"
+                sh 'docker push $IMAGE_NAME'
+            }
+        }
+
+        stage('Deploy backup-image to Kubernetes') {
+            steps {
+                sh 'export KUBECONFIG=/var/lib/jenkins/.kube/config'    
+                sh 'kubectl apply -f k8s/backup-deployment.yaml'
+                sh 'kubectl apply -f k8s/backup-service.yaml'
+                sh 'kubectl get all'
+            }
+    
+        }
+    
+
+    }
+}
