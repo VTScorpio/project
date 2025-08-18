@@ -70,7 +70,7 @@ project/
 * Terraform
 * LocalStack (versiune full)
 * AWS
-* Masina virtuala
+* Masina virtuala access SSH
 
 ### 1. 🔁 Cloneaza proiectul
 
